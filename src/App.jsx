@@ -1,140 +1,142 @@
-import React from 'react';
+import React, { useContext, useReducer } from 'react';
 import './App.css';
 import { message, Upload, Button } from 'antd';
 import html2canvas from 'html2canvas';
 
-import style1 from './assets/style-1.png';
-import style2 from './assets/style-2.png';
-import style3 from './assets/style-3.png';
-import style4 from './assets/style-4.png';
-import style5 from './assets/style-5.png';
+const borders = [
+  require("../src/assets/style-1.png"),
+  require("../src/assets/style-2.png"),
+  require("../src/assets/style-3.png"),
+  require("../src/assets/style-4.png"),
+  require("../src/assets/style-5.png")
+]
 
-const Avatar = function (props) {
-  return (
-    <div className="avatar" {...{
-      style: {
-        backgroundImage: 'url("' + props.src + '")'
+const AppContext = React.createContext({});
+
+function myReducer(state, action) {
+  switch (action.type) {
+    case ('changeBorder'):
+      const index = ((state.index + 1) <= state.borders.length - 1) ? state.index + 1 : 0
+      return {
+        ...state,
+        index: index
       }
-    }} />
-  )
-}
-
-const Border = function (props) {
-  return (
-    <div className="pictit" {...{
-      style: {
-        backgroundImage: 'url("' + props.src + '")'
+    case ('updateAvatar'):
+      return {
+        ...state,
+        avatar: action.result
       }
-    }} />
-  )
-}
-
-class App extends React.Component {
-  constructor(props) {
-    super(props)
-
-    this.state = {
-      index: 0,
-      avatar: '',
-      imageUrl: '',
-      background: [
-        style1,
-        style2,
-        style3,
-        style4,
-        style5
-      ]
-    }
-  }
-  componentDidMount() {
-  }
-  changeBorder(index) {
-    index++
-
-    if (index > this.state.background.length - 1) {
-      index = 0
-    }
-
-    this.setState({
-      index: index
-    })
-  }
-  build() {
-    html2canvas(document.getElementById("demo")).then(canvas => {
-      document.getElementById('download').appendChild(canvas)
-
-      canvas.toBlob(function (blob) {
-        let reader = new window.FileReader()
-
-        reader.onloadend = function () {
-          const data = reader.result
-
-          var btnDownload = document.getElementById("btnDownload")
-          btnDownload.download = 'avatar.png'
-          btnDownload.href = data
-          btnDownload.click()
-        }
-
-        reader.readAsDataURL(blob)
+    case ('build'):
+      html2canvas(document.getElementById("demo")).then(canvas => {
+        document.getElementById('download').appendChild(canvas)
+  
+        canvas.toBlob(function (blob) {
+          let reader = new window.FileReader()
+  
+          reader.onloadend = function () {
+            const data = reader.result
+  
+            var btnDownload = document.getElementById("btnDownload")
+            btnDownload.download = 'avatar.png'
+            btnDownload.href = data
+            btnDownload.click()
+          }
+  
+          reader.readAsDataURL(blob)
+        })
+  
+        message.success('生成成功')
       })
-
-      message.success('生成成功')
-    })
+    default:
+      return state
   }
-  render() {
-    // 获取所有边框配置
-    const backgrounds = this.state.background
-    // 当前所选边框索引
-    const index = this.state.index
-    // 选取头像的base64信息
-    const avatar = this.state.avatar
-    // 上传组件配置
-    const UploadProps = {
-      customRequest: () => {
-        // 覆盖默认的上传行为 不需要上传到远端
-      },
-      showUploadList: false,
-      transformFile: (file) => {
-        // blob2base64
-        let reader = new window.FileReader()
-        reader.readAsDataURL(file)
-        reader.onloadend = () => this.setState({ avatar: reader.result })
-      }
+}
+
+const Avatar = (props) => (
+  <div className="avatar" {...{
+    style: {
+      backgroundImage: 'url("' + props.src + '")'
     }
-    return (
-      <div id="app">
-        <div className="main">
-          <div id="demo">
+  }} />
+)
 
-            <Avatar src={avatar} />
+const Border = (props) => (
+  <div className="pictit" {...{
+    style: {
+      backgroundImage: 'url("' + props.src + '")'
+    }
+  }} />
+)
 
-            <Border src={backgrounds[index]} />
-          </div>
+const Preview = () => {
+  const { state } = useContext(AppContext);
+  return (
+    <div id="demo">
+      <Avatar src={state.avatar} />
+      <Border src={state.borders[state.index]} />
+    </div>
+  )
+}
 
-          <div className="tool">
-            <Upload {...UploadProps}>
-              <Button type="primary">
-                选取文件
-                </Button>
-            </Upload>
-
-            {
-              avatar ? (
-                <div className="buttons">
-                  <Button onClick={() => this.changeBorder(index)} type="dashed">切换边框</Button>
-                  <Button onClick={() => this.build()} type="dashed">生成图片</Button>
-                </div>
-              ) : null
-            }
-
-          </div>
-
-          <div id="download"></div>
-          <a id="btnDownload" className="hide"></a>
-        </div>
-      </div>
-    )
+const Tools = () => {
+  const { state, dispatch } = useContext(AppContext);
+  // 上传组件配置
+  const UploadProps = {
+    customRequest: () => {
+      // 覆盖默认的上传行为 不需要上传到远端
+    },
+    showUploadList: false,
+    transformFile: (file) => {
+      // blob2base64
+      let reader = new window.FileReader()
+      reader.readAsDataURL(file)
+      reader.onloadend = () => dispatch({
+        type: 'updateAvatar',
+        result: reader.result
+      })
+    }
   }
+  return (
+    <div className="tool">
+      <Upload {...UploadProps}>
+        <Button type="primary">
+          选取文件
+        </Button>
+      </Upload>
+
+      {
+        state.avatar ? (
+          <div className="buttons">
+            <Button onClick={() => dispatch({ type: 'changeBorder' })} type="dashed">切换边框</Button>
+            <Button onClick={() => dispatch({ type: 'build' })} type="dashed">生成图片</Button>
+          </div>
+        ) : null
+      }
+
+      <div id="download"></div>
+      <a id="btnDownload" className="hide"></a>
+
+    </div>
+  )
+}
+
+function App() {
+  const [state, dispatch] = useReducer(myReducer, {
+    index: 0,
+    avatar: '',
+    borders: borders
+  })
+
+  return (
+    <div id="app">
+      <div className="main">
+        <AppContext.Provider value={{ state, dispatch }}>
+          <Preview />
+          <Tools />
+        </AppContext.Provider>
+      </div>
+    </div>
+  )
 }
 
 export default App;
