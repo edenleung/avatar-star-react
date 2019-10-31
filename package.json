@@ -2,6 +2,7 @@
   "name": "react-app",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://xiaodit.github.io/avatar-star-react",
   "dependencies": {
     "antd": "^3.23.6",
     "babel-plugin-import": "^1.12.2",
