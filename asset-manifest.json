@@ -1,0 +1,27 @@
+{
+  "files": {
+    "main.css": "/avatar-star-react/static/css/main.fda30a71.chunk.css",
+    "main.js": "/avatar-star-react/static/js/main.959b142a.chunk.js",
+    "main.js.map": "/avatar-star-react/static/js/main.959b142a.chunk.js.map",
+    "runtime-main.js": "/avatar-star-react/static/js/runtime-main.8fca7496.js",
+    "runtime-main.js.map": "/avatar-star-react/static/js/runtime-main.8fca7496.js.map",
+    "static/css/2.a2012af5.chunk.css": "/avatar-star-react/static/css/2.a2012af5.chunk.css",
+    "static/js/2.c99d3352.chunk.js": "/avatar-star-react/static/js/2.c99d3352.chunk.js",
+    "static/js/2.c99d3352.chunk.js.map": "/avatar-star-react/static/js/2.c99d3352.chunk.js.map",
+    "index.html": "/avatar-star-react/index.html",
+    "precache-manifest.e31c0326104425407b1f8d75148cce19.js": "/avatar-star-react/precache-manifest.e31c0326104425407b1f8d75148cce19.js",
+    "service-worker.js": "/avatar-star-react/service-worker.js",
+    "static/css/2.a2012af5.chunk.css.map": "/avatar-star-react/static/css/2.a2012af5.chunk.css.map",
+    "static/css/main.fda30a71.chunk.css.map": "/avatar-star-react/static/css/main.fda30a71.chunk.css.map",
+    "static/media/style-1.png": "/avatar-star-react/static/media/style-1.969b36c2.png",
+    "static/media/style-2.png": "/avatar-star-react/static/media/style-2.7d07d80f.png",
+    "static/media/style-3.png": "/avatar-star-react/static/media/style-3.7e0fd93e.png"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.8fca7496.js",
+    "static/css/2.a2012af5.chunk.css",
+    "static/js/2.c99d3352.chunk.js",
+    "static/css/main.fda30a71.chunk.css",
+    "static/js/main.959b142a.chunk.js"
+  ]
+}
